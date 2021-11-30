@@ -6,10 +6,11 @@
 %%
 clc; clear; close all
 
-% Take screen capture
-left = 130; top = 494;
-width = round(1048 * 0.4);   % half screen width
-height = round(968 * 0.23);
+% define ROI
+screen_width = 1920; screen_height = 1080;
+left = 0; top = 500;
+width = round(0.8*screen_width/2);
+height = round(0.6*(screen_height-top));
 robot = java.awt.Robot();
 pos = [left top width height]; % [left top width height]
 rect = java.awt.Rectangle(pos(1),pos(2),pos(3),pos(4));
@@ -24,6 +25,6 @@ while 1
     winCap_rgb(:,:,3) = reshape(rgb(1:4:end),cap.getWidth,[])';
     imshow(winCap_rgb)
     
-    txt = ocr(winCap_rgb);
+    txt = ocr(winCap_rgb,'TextLayout','Block','CharacterSet','.0123456789');
     disp(txt.Words)
 end
