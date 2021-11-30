@@ -1,52 +1,27 @@
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
-distance: 0.004
+Port 0:  Range: 217.7 mm  Amp: 1576
+Port 0:  Range: 217.8 mm  Amp: 1435
+Port 0:  Range: 217.4 mm  Amp: 1212
+Port 0:  Range: 217.9 mm  Amp: 1329
+Port 0:  Range: 217.8 mm  Amp: 1403
+Port 0:  Range: 217.8 mm  Amp: 1013
+Port 0:  Range: 217.9 mm  Amp: 1065
+Port 0:  Range: 217.8 mm  Amp: 1330
+Port 0:  Range: 217.3 mm  Amp: 1093
+Port 0:  Range: 217.6 mm  Amp: 1203
+Port 0:  Range: 217.8 mm  Amp: 1259
+Port 0:  Range: 217.8 mm  Amp: 1201
+Port 0:  Range: 217.7 mm  Amp: 1113
+Port 0:  Range: 217.7 mm  Amp: 1106
+Port 0:  Range: 217.8 mm  Amp: 1036
+Port 0:  Range: 217.5 mm  Amp: 1208
+Port 0:  Range: 217.8 mm  Amp: 1390
+Port 0:  Range: 218.0 mm  Amp: 1509
+Port 0:  Range: 218.0 mm  Amp: 1553
+Port 0:  Range: 217.8 mm  Amp: 1284
+Port 0:  Range: 217.5 mm  Amp: 1140
+Port 0:  Range: 217.6 mm  Amp: 1029
+Port 0:  Range: 217.8 mm  Amp: 1045
+Port 0:  Range: 217.9 mm  Amp: 1233
+Port 0:  Range: 218.0 mm  Amp: 1186
+Port 0:  Range: 217.8 mm  Amp: 1201
+Port 0:  Range: 218.2 mm  Amp: 1289
