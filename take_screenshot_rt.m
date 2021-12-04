@@ -26,14 +26,39 @@ while 1
 %     imshow(winCap_rgb)
     
     txt = ocr(winCap_rgb,'TextLayout','Block','CharacterSet','');
+    % port0
     port0_indC = strfind(txt.Words,'0:');
     port0_ind = find(not(cellfun('isempty',port0_indC)));
     port0_range = zeros(1,length(port0_ind));
     for i  = 1:length(port0_ind)
         port0_range(i) = str2double(txt.Words{port0_ind(i)+2});
     end
+    % port1
+    port1_indC = strfind(txt.Words,'1:');
+    port1_ind = find(not(cellfun('isempty',port1_indC)));
+    port1_range = zeros(1,length(port1_ind));
+    for i  = 1:length(port1_ind)
+        port1_range(i) = str2double(txt.Words{port1_ind(i)+2});
+    end
+    % port2
+    port2_indC = strfind(txt.Words,'2:');
+    port2_ind = find(not(cellfun('isempty',port2_indC)));
+    port2_range = zeros(1,length(port2_ind));
+    for i  = 1:length(port2_ind)
+        port2_range(i) = str2double(txt.Words{port2_ind(i)+2});
+    end
+    % port3
+    port3_indC = strfind(txt.Words,'3:');
+    port3_ind = find(not(cellfun('isempty',port3_indC)));
+    port3_range = zeros(1,length(port3_ind));
+    for i  = 1:length(port3_ind)
+        port3_range(i) = str2double(txt.Words{port3_ind(i)+2});
+    end
 
-    fprintf('port0 range: [mm]: %f \t',port0_range(end))
+    fprintf('port0 range: [mm]: %f \n',port0_range(end))
+    fprintf('port1 range: [mm]: %f \n',port1_range(end))
+    fprintf('port2 range: [mm]: %f \n',port2_range(end))
+    fprintf('port3 range: [mm]: %f \n',port3_range(end))
     toc
 end
 
