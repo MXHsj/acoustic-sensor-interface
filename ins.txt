@@ -1,0 +1,15 @@
+Tera Term
+0. connect USB, open tera term -> select serial port --> COM4: EDBG Virtual COM port
+1. adjust font
+2. setup --> terminal --> New-line --> receive --> auto
+3. setup --> serial port --> check port, speed, data
+
+4. if data stops --> press reset botton on board
+
+
+Microchip Studio
+1. change SR Narrow FOV: application --> smartsonic --> app_config.h
+
+2. compile & flash
+	2.1 build --> rebuild
+	2.2 tools --> device programming
