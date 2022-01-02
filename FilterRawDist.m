@@ -7,7 +7,6 @@
 % =====================================================
 function [dist_filtered] = FilterRawDist(dist_buffer)
 
-dist_buffer = rmoutliers(dist_buffer,'mean');
+% dist_buffer = rmoutliers(dist_buffer,'mean');
+dist_buffer = filloutliers(dist_buffer,'center','mean');
 dist_filtered = mean(dist_buffer,1,'omitnan');
-
-

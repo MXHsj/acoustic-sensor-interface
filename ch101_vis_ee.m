@@ -1,4 +1,4 @@
-%% visualiza end-effector through ch101 distance sensing
+%% visualize end-effector through ch101 distance sensing
 clc; clear; close all
 
 % serial
@@ -13,7 +13,9 @@ figure('Name','out-of-plane','Position',[1920/5,1080/6,1080,810])
 axis([-80 80, -80 80, -250 20]);
 hold on; grid on; axis equal
 xlabel('x [mm]'); ylabel('y [mm]');  zlabel('z [mm]');
-vis_range_flag = [1,1,1,1];  % 0 1 2 3
+% ============== sensor vis enable ============== 
+vis_range_flag = [0,1,0,1];  % 0 1 2 3
+% ===============================================
 if sum(vis_range_flag) < 4
     if vis_range_flag(1) && vis_range_flag(3)       % out-of-plane view
         view(45,0); 
@@ -34,12 +36,12 @@ ring.FaceAlpha = 'flat' ;          % Interpolate to find face transparency
 R = (max(p_ring(1,:)) - min(p_ring(1,:)))/2;
 geometry.x = [mean(p_ring(1,:)),mean(p_ring(1,:))-R,mean(p_ring(1,:)),mean(p_ring(1,:))+R];
 geometry.y = [mean(p_ring(2,:))-R,mean(p_ring(2,:)),mean(p_ring(2,:))+R,mean(p_ring(2,:))];
-% measured distances
+% initialize sensor measure visualization
 l0 = line([geometry.x(1),geometry.x(1)],[geometry.y(1),geometry.y(1)],[0,0],'Color','red','LineWidth',1.5);
 l1 = line([geometry.x(2),geometry.x(2)],[geometry.y(2),geometry.y(2)],[0,0],'Color','red','LineWidth',1.5);
 l2 = line([geometry.x(3),geometry.x(3)],[geometry.y(3),geometry.y(3)],[0,0],'Color','red','LineWidth',1.5);
 l3 = line([geometry.x(4),geometry.x(4)],[geometry.y(4),geometry.y(4)],[0,0],'Color','red','LineWidth',1.5);
-% port labels
+ln = line([geometry.x(1),geometry.x(1)],[geometry.y(2),geometry.y(2)],[-250,-250],'Color','green','LineWidth',1.5);  % normal vector
 if vis_range_flag(1)
     text(geometry.x(1),geometry.y(1),15,'port0');
 end
@@ -53,7 +55,7 @@ if vis_range_flag(4)
     text(geometry.x(4),geometry.y(4),15,'port3');
 end
 
-% real-time visualization
+% do real-time visualization
 dist = zeros(1,n_sensors);
 buffer_size = 20; dist_buffer = [];
 port_flag = zeros(1,n_sensors,'logical');
@@ -76,19 +78,26 @@ while 1
         dist_buffer(1,:) = [];
     end
     dist_filtered = FilterRawDist(dist_buffer);
-    % update sensor measures
-    l0.ZData = [0 0]; l1.ZData = [0 0]; l2.ZData = [0 0]; l3.ZData = [0 0];
+    % get surface normal
+    norm = 120.*GetSurfNorm(dist_filtered); % amplify magnitude  
+    tilt = max(min(dot([0,0,-1],norm)/(1*vecnorm(norm)),1),-1);
+    fprintf('tilted angle: %f [deg]\n',real(acosd(tilt)))
+    % update sensor measure visualization
+    ln.XData = [geometry.x(1), geometry.x(1) + norm(1)]; 
+    ln.YData = [geometry.y(2), geometry.y(2) + norm(2)]; 
+    ln.ZData = [-250, -250 - norm(3)];
+    l0.ZData = [0,0]; l1.ZData = [0,0]; l2.ZData = [0,0]; l3.ZData = [0,0];
     if ~isnan(dist_filtered(1)) && vis_range_flag(1)
-        l0.ZData = [0 -dist_filtered(1)];
+        l0.ZData = [0, -dist_filtered(1)];
     end
     if ~isnan(dist_filtered(2))&& vis_range_flag(2)
-        l1.ZData = [0 -dist_filtered(2)];
+        l1.ZData = [0, -dist_filtered(2)];
     end
     if ~isnan(dist_filtered(3))&& vis_range_flag(3)
-        l2.ZData = [0 -dist_filtered(3)];
+        l2.ZData = [0, -dist_filtered(3)];
     end
     if ~isnan(dist_filtered(4))&& vis_range_flag(4)
-        l3.ZData = [0 -dist_filtered(4)];
+        l3.ZData = [0, -dist_filtered(4)];
     end
 %     fprintf('port0: %f[mm]\tport1: %f[mm]\tport2: %f[mm]\tport3: %f[mm]\n',dist(1),dist(2),dist(3),dist(4))
     pause(2*1e-4)
