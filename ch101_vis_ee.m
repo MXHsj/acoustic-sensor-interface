@@ -2,7 +2,7 @@
 clc; clear; close all
 
 % serial
-port = 'COM3'; n_sensors = 4;
+port = 'COM8'; n_sensors = 4;
 if exist('sensors','var')
     clear sensors
 end

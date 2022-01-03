@@ -39,9 +39,21 @@ else
 end
 
 norm01 = cross(P0-Pt,P1-Pt);
+if isnan(norm01)
+    norm01 = [0,0,0];
+end
 norm12 = cross(P1-Pt,P2-Pt);
+if isnan(norm12)
+    norm12 = [0,0,0];
+end
 norm23 = cross(P2-Pt,P3-Pt);
+if isnan(norm23)
+    norm23 = [0,0,0];
+end
 norm30 = cross(P3-Pt,P0-Pt);
+if isnan(norm30)
+    norm30 = [0,0,0];
+end
 
 norm = norm01 + norm12 + norm23 + norm30;
 norm = normalize(norm,'norm');

@@ -4,25 +4,29 @@ clc; clear; close all
 %% ----------------- ROS network -----------------
 rosshutdown
 % [~, local_ip] = system('ipconfig');
-setenv('ROS_MASTER_URI','http://130.215.121.229:11311') % ip of robot desktop
-setenv('ROS_IP','130.215.192.178')   % ip of this machine
+setenv('ROS_MASTER_URI','http://130.215.211.193:11311') % ip of robot desktop
+setenv('ROS_IP','130.215.192.168')   % ip of this machine
 rosinit
 % define publisher
-ch101_pub = rospublisher('ch101', 'std_msgs/Float64MultiArray');
-ch101_msg = rosmessage(ch101_pub);
-ch101_msg.Data = [nan, nan, nan, nan];
+ch101_dist_pub = rospublisher('ch101/distance', 'std_msgs/Float64MultiArray');
+ch101_norm_pub = rospublisher('ch101/normal', 'std_msgs/Float64MultiArray');
+ch101_dist_msg = rosmessage(ch101_dist_pub);
+ch101_norm_msg = rosmessage(ch101_norm_pub);
+ch101_dist_msg.Data = [nan, nan, nan, nan];
+ch101_norm_msg.Data = [nan, nan, nan];
 
 %% 
-port = 'COM3';
+port = 'COM8';
 n_sensors = 4;
 if exist('sensors','var')
     clear sensors
 end
 sensors = serialport(port,9600,'DataBits',8,'Parity','none','StopBits',1);
 dist = zeros(1,n_sensors);
-buffer_size = 20; dist_buffer = [];
+buffer_size = 22; dist_buffer = [];
 port_flag = zeros(1,n_sensors,'logical');
-
+freq = 20;
+rate = rateControl(freq);
 while 1
     tic
     latest = char(readline(sensors));
@@ -50,8 +54,10 @@ while 1
     fprintf('port0: %f[mm]\tport1: %f[mm]\tport2: %f[mm]\tport3: %f[mm]\n',dist(1),dist(2),dist(3),dist(4))
     fprintf('tilted angle: %f [deg]\n',real(acosd(tilt)))
     % publish message
-    % TODO: publish surface normal
-    ch101_msg.data = dist;
-    send(ch101_pub, ch101_msg);
+    ch101_dist_msg.Data = dist;
+    ch101_norm_msg.Data = norm;
+    send(ch101_dist_pub, ch101_dist_msg);
+    send(ch101_norm_pub, ch101_norm_msg);
+    waitfor(rate);
     toc;
 end
