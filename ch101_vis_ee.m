@@ -2,19 +2,19 @@
 clc; clear; close all
 
 % serial
-port = 'COM8'; n_sensors = 4;
+port = 'COM4'; n_sensors = 4;
 if exist('sensors','var')
     clear sensors
 end
 sensors = serialport(port,9600,'DataBits',8,'Parity','none','StopBits',1);
 
 % set figure properties
-figure('Name','out-of-plane','Position',[1920/5,1080/6,1080,810])
+figure('Name','sensor ring vis','Position',[1920/5,1080/6,1080,810])
 axis([-80 80, -80 80, -250 20]);
 hold on; grid on; axis equal
 xlabel('x [mm]'); ylabel('y [mm]');  zlabel('z [mm]');
 % ============== sensor vis enable ============== 
-vis_range_flag = [0,1,0,1];  % 0 1 2 3
+vis_range_flag = [1,1,1,1];  % 0 1 2 3
 % ===============================================
 if sum(vis_range_flag) < 4
     if vis_range_flag(1) && vis_range_flag(3)       % out-of-plane view
