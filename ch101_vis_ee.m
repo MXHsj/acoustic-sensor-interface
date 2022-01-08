@@ -57,7 +57,8 @@ end
 
 % do real-time visualization
 dist = zeros(1,n_sensors);
-buffer_size = 20; dist_buffer = [];
+buffer_size = 40; dist_buffer = [];
+amp = zeros(1,n_sensors);
 port_flag = zeros(1,n_sensors,'logical');
 while 1
     latest = char(readline(sensors));
@@ -68,9 +69,16 @@ while 1
     % extract distance
     range_ind = strfind(latest, 'Range: ');
     if ~isempty(range_ind)
-        dist(port_flag) = str2double(latest(range_ind+7:range_ind+11));
+        dist(port_flag) = str2double(latest(range_ind+length('Range: '):range_ind+length('Range: ')+4));
     else
         dist(port_flag) = nan;
+    end
+    % extract amplitude
+    amp_ind = strfind(latest, 'Amp: ');
+    if ~isempty(amp_ind)
+        amp(port_flag) = str2double(latest(amp_ind+length('Amp: '):amp_ind+length('Amp: ')+4));
+    else
+        amp(port_flag) = nan;
     end
     % filtering
     dist_buffer = [dist_buffer; dist];
@@ -99,7 +107,7 @@ while 1
     if ~isnan(dist_filtered(4))&& vis_range_flag(4)
         l3.ZData = [0, -dist_filtered(4)];
     end
-%     fprintf('port0: %f[mm]\tport1: %f[mm]\tport2: %f[mm]\tport3: %f[mm]\n',dist(1),dist(2),dist(3),dist(4))
+    fprintf('port0: %f[mm]\tport1: %f[mm]\tport2: %f[mm]\tport3: %f[mm]\n',dist(1),dist(2),dist(3),dist(4))
     pause(2*1e-4)
 end
  
