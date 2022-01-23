@@ -2,11 +2,12 @@
 clc; clear; close all
 
 % serial
-port = 'COM3'; n_sensors = 4;
+port = 'COM7'; 
+IDs = [1 1 2 2];
 if exist('sensors','var')
     clear sensors
 end
-sensors = serialport(port,9600,'DataBits',8,'Parity','none','StopBits',1);
+sensors = serialport(port,115200,'DataBits',8,'Parity','none','StopBits',1);
 
 % set figure properties
 figure('Name','sensor ring vis','Position',[1920/5,1080/6,1080,810])
@@ -14,7 +15,7 @@ axis([-80 80, -80 80, -250 20]);
 hold on; grid on; axis equal
 xlabel('x [mm]'); ylabel('y [mm]');  zlabel('z [mm]');
 % ============== sensor vis enable ============== 
-vis_range_flag = [1,1,1,1];  % 0 1 2 3
+vis_range_flag = [0,1,0,1];  % 0 1 2 3
 % ===============================================
 if sum(vis_range_flag) < 4
     if vis_range_flag(1) && vis_range_flag(3)       % out-of-plane view
@@ -56,29 +57,21 @@ if vis_range_flag(4)
 end
 
 % do real-time visualization
-dist = zeros(1,n_sensors);
-buffer_size = 40; dist_buffer = [];
-amp = zeros(1,n_sensors);
-port_flag = zeros(1,n_sensors,'logical');
+dist = zeros(1,length(IDs));
+buffer_size = 10; dist_buffer = [];
+port_flag = zeros(1,length(IDs),'logical');
 while 1
     latest = char(readline(sensors));
-    % check which port
-    for i=1:n_sensors
-        port_flag(i) = contains(latest,[num2str(i-1),':']);
+    % check sensor ID
+    for i = 1:length(IDs)
+        port_flag(i) = contains(latest,[num2str(IDs(i)),':']);
     end
     % extract distance
     range_ind = strfind(latest, 'Range: ');
     if ~isempty(range_ind)
-        dist(port_flag) = str2double(latest(range_ind+length('Range: '):range_ind+length('Range: ')+4));
+        dist(port_flag) = str2double(latest(range_ind+length('Range: '):range_ind+length('Range: ')+2));
     else
         dist(port_flag) = nan;
-    end
-    % extract amplitude
-    amp_ind = strfind(latest, 'Amp: ');
-    if ~isempty(amp_ind)
-        amp(port_flag) = str2double(latest(amp_ind+length('Amp: '):amp_ind+length('Amp: ')+4));
-    else
-        amp(port_flag) = nan;
     end
     % filtering
     dist_buffer = [dist_buffer; dist];
@@ -86,6 +79,11 @@ while 1
         dist_buffer(1,:) = [];
     end
     dist_filtered = FilterRawDist(dist_buffer);
+    
+    % ========== temporarily for 2 sensors ==========
+    dist(3) = dist(1); dist(4) = dist(2);
+    % ===============================================
+    
     % get surface normal
     norm = 120.*GetSurfNorm(dist_filtered); % amplify magnitude  
     tilt = max(min(dot([0,0,-1],norm)/(1*vecnorm(norm)),1),-1);
@@ -108,6 +106,7 @@ while 1
         l3.ZData = [0, -dist_filtered(4)];
     end
     fprintf('port0: %f[mm]\tport1: %f[mm]\tport2: %f[mm]\tport3: %f[mm]\n',dist(1),dist(2),dist(3),dist(4))
+%     fprintf('port0: %f[mm]\tport1: %f[mm]\n',dist(1),dist(2))
     pause(2*1e-4)
 end
  
