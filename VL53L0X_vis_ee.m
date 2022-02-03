@@ -1,9 +1,9 @@
-%% visualize end-effector through ch101 distance sensing
+%% visualize end-effector through VL53L0X distance sensing
 clc; clear; close all
 
 % serial
 port = 'COM7'; 
-IDs = [1 1 2 2];
+IDs = [1 2 3 4];
 if exist('sensors','var')
     clear sensors
 end

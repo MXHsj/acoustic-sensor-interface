@@ -3,8 +3,7 @@ clc; clear; close all
 
 %%
 port = 'COM7';
-% IDs = [238 238 238 238];
-IDs = [1 2];
+IDs = [1 2 3 4];
 if exist('sensors','var')
     clear sensors
 end
@@ -40,8 +39,8 @@ while n_sample > 0 && count_sample < n_sample
     % vis
     fprintf('sensor %d range: %f [mm]\n', IDs(1), dist(1))
     fprintf('sensor %d range: %f [mm]\n', IDs(2), dist(2))
-%     fprintf('sensor %d range: %f [mm]\n', IDs(3), dist(3))
-%     fprintf('sensor %d range: %f [mm]\n', IDs(4), dist(4))
+    fprintf('sensor %d range: %f [mm]\n', IDs(3), dist(3))
+    fprintf('sensor %d range: %f [mm]\n', IDs(4), dist(4))
     % record distance and amplitude
     dist_rec(count_sample, :) = dist_filtered;
     count_sample = count_sample + 1;
