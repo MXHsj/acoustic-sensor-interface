@@ -5,17 +5,21 @@
 % input:        sensor distances (1x4 vector)
 % output:       surface normal w.r.t eef frame (1x3 vector)
 % =====================================================
-function [norm] = GetSurfNorm(dist)
-
-if length(dist) ~= 4
-    norm = nan(1,3); disp('invalid sensor input')
-    return 
+function [norm] = GetSurfNorm(dist,R,L)
+% params
+if nargin < 2
+    R = 58;         % [mm] sensor ring array radius
+    L = 125;        % [mm] offset between sensor & probe tip
+elseif nargin < 3
+    L = 125;
 end
 
-% params
-R = 58;         % [mm] sensor ring array radius
-L = 125;        % [mm] offset between sensor & probe tip
 Pt = [0,0,0];   % [mm] probe tip w.r.t eef frame
+
+if length(dist) ~= 4
+    norm = nan(1,3); disp('not enough valid sensor distance')
+    return 
+end
 
 if ~isnan(dist(1))
     P0 = [0, -R, -L + dist(1)]; % [mm] port0 w.r.t eef frame

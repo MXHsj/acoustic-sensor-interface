@@ -28,7 +28,7 @@ else
 end
 
 % sensor ring visualization
-[f,p] = stlread_mod('US_sensor_ring.stl');
+[f,p] = stlread_mod('laser_sensor_ring.stl');
 T_world_ring = makehgtform('xrotate',pi/2,'yrotate',pi/4);
 p_ring = T_world_ring*p;
 ring = patch('Faces',f,'Vertices',p_ring(1:3,:)','Facecolor',[0.8 0.8 0.6],'Edgecolor','none');
@@ -80,10 +80,6 @@ while 1
     end
     dist_filtered = FilterRawDist(dist_buffer);
     
-    % ========== temporarily for 2 sensors ==========
-    dist(3) = dist(1); dist(4) = dist(2);
-    % ===============================================
-    
     % get surface normal
     norm = 120.*GetSurfNorm(dist_filtered); % amplify magnitude  
     tilt = max(min(dot([0,0,-1],norm)/(1*vecnorm(norm)),1),-1);
@@ -106,7 +102,6 @@ while 1
         l3.ZData = [0, -dist_filtered(4)];
     end
     fprintf('port0: %f[mm]\tport1: %f[mm]\tport2: %f[mm]\tport3: %f[mm]\n',dist(1),dist(2),dist(3),dist(4))
-%     fprintf('port0: %f[mm]\tport1: %f[mm]\n',dist(1),dist(2))
     pause(2*1e-4)
 end
  
