@@ -2,7 +2,7 @@
 clc; clear; close all
 
 %%
-port = 'COM7';
+port = 'COM9';
 IDs = [1 2 3 4];
 if exist('sensors','var')
     clear sensors
@@ -11,7 +11,7 @@ sensors = serialport(port,115200,'DataBits',8,'Parity','none','StopBits',1);
 
 port_flag = zeros(1,length(IDs),'logical');
 dist = zeros(1,length(IDs));
-buffer_size = 20; dist_buffer = [];
+buffer_size = 15; dist_buffer = [];
 n_sample = 200;      % set data_count to -1 to disable recording
 dist_rec = zeros(n_sample,length(IDs));
 count_sample = 1;
