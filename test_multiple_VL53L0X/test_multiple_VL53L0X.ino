@@ -107,10 +107,8 @@ void read_dual_sensors() {
     Serial.print(sensor1);
     Serial.print(" [mm]\n");    
   } else {
-    Serial.print("Out of range");
+    Serial.print("Out of range\n");
   }
-  
-  Serial.print(" ");
 
   // print sensor two reading
   Serial.print("2: ");
@@ -118,9 +116,9 @@ void read_dual_sensors() {
     sensor2 = measure2.RangeMilliMeter;
     Serial.print("Range: ");
     Serial.print(sensor2);
-    Serial.print(" [mm]");
+    Serial.print(" [mm]\n");
   } else {
-    Serial.print("Out of range");
+    Serial.print("Out of range\n");
   }
 
     // print sensor three reading
@@ -129,9 +127,9 @@ void read_dual_sensors() {
     sensor3 = measure3.RangeMilliMeter;
     Serial.print("Range: ");
     Serial.print(sensor3);
-    Serial.print(" [mm]");
+    Serial.print(" [mm]\n");
   } else {
-    Serial.print("Out of range");
+    Serial.print("Out of range\n");
   }
 
     // print sensor four reading
@@ -140,9 +138,9 @@ void read_dual_sensors() {
     sensor4 = measure4.RangeMilliMeter;
     Serial.print("Range: ");
     Serial.print(sensor4);
-    Serial.print(" [mm]");
+    Serial.print(" [mm]\n");
   } else {
-    Serial.print("Out of range");
+    Serial.print("Out of range\n");
   }
   
   Serial.println();

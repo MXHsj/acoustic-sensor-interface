@@ -15,7 +15,7 @@ axis([-80 80, -80 80, -250 20]);
 hold on; grid on; axis equal
 xlabel('x [mm]'); ylabel('y [mm]');  zlabel('z [mm]');
 % ============== sensor vis enable ============== 
-vis_range_flag = [0,1,0,1];  % 0 1 2 3
+vis_range_flag = [1,1,1,1];  % 1 2 3 4
 % ===============================================
 if sum(vis_range_flag) < 4
     if vis_range_flag(1) && vis_range_flag(3)       % out-of-plane view
@@ -44,21 +44,21 @@ l2 = line([geometry.x(3),geometry.x(3)],[geometry.y(3),geometry.y(3)],[0,0],'Col
 l3 = line([geometry.x(4),geometry.x(4)],[geometry.y(4),geometry.y(4)],[0,0],'Color','red','LineWidth',1.5);
 ln = line([geometry.x(1),geometry.x(1)],[geometry.y(2),geometry.y(2)],[-250,-250],'Color','green','LineWidth',1.5);  % normal vector
 if vis_range_flag(1)
-    text(geometry.x(1),geometry.y(1),15,'port0');
+    text(geometry.x(1),geometry.y(1),15,'port1');
 end
 if vis_range_flag(2)
-    text(geometry.x(2),geometry.y(2),15,'port1');
+    text(geometry.x(2),geometry.y(2),15,'port2');
 end
 if vis_range_flag(3) 
-    text(geometry.x(3),geometry.y(3),15,'port2');
+    text(geometry.x(3),geometry.y(3),15,'port3');
 end
 if vis_range_flag(4)
-    text(geometry.x(4),geometry.y(4),15,'port3');
+    text(geometry.x(4),geometry.y(4),15,'port4');
 end
 
 % do real-time visualization
 dist = zeros(1,length(IDs));
-buffer_size = 10; dist_buffer = [];
+buffer_size = 5; dist_buffer = [];
 port_flag = zeros(1,length(IDs),'logical');
 while 1
     latest = char(readline(sensors));
@@ -101,7 +101,7 @@ while 1
     if ~isnan(dist_filtered(4))&& vis_range_flag(4)
         l3.ZData = [0, -dist_filtered(4)];
     end
-    fprintf('port0: %f[mm]\tport1: %f[mm]\tport2: %f[mm]\tport3: %f[mm]\n',dist(1),dist(2),dist(3),dist(4))
+    fprintf('port1: %f[mm]\tport2: %f[mm]\tport3: %f[mm]\tport4: %f[mm]\n',dist(1),dist(2),dist(3),dist(4))
     pause(2*1e-4)
 end
  

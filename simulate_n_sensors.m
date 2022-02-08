@@ -1,8 +1,20 @@
 %% simulate VL53L0X distance sensing
 clc; clear; close all
 
+% ========== random normal vector generation ==========
+vector = GenUnitVector(10, false)';
+x_candidate = vector(1,:);
+y_candidate = vector(2,:);
+z_candidate = vector(3,:);
+% x_candidate = [0, 0.0106, -0.0928, 0.1042, 0.0701, -0.0835, 0.1128, -0.1083, 0.0587, -0.0616];
+% y_candidate = [0, -0.6497, 0.5638, -0.2503, 0.5883, -0.7060, -0.4262, 0.4348, -0.3523, -0.3385];
+% z_candidate = [1, 0.7601, 0.8207, 0.9625, 0.8056, 0.7033, 0.8976, 0.8940, 0.9340, 0.9389];
+% =====================================================
+
+%% do simulation
+n_sensors = 4;  % 3 to 8
+
 % set figure properties
-n_sensors = 5;
 figure('Name','sensor ring vis','Position',[1920/5,1080/6,1080,810])
 axis([-82 82, -82 82, -250 20]);
 hold on; grid on; axis equal
@@ -36,7 +48,7 @@ end
 ln = line([ring.origin(1),ring.origin(1)],[ring.origin(2),ring.origin(2)],[-250,-250],'Color','green','LineWidth',1.5);
 
 % define plane  
-plane.normal = [0,0,1]';
+plane.normal = [x_candidate(1),y_candidate(1),z_candidate(1)]';
 plane.origin = [ring.origin(1),ring.origin(2),-ring.L]';
 % plane equation a*x + b*y + c*z + d = 0, where normal=[a,b,c]
 d = -dot(plane.origin, plane.normal);
@@ -51,20 +63,30 @@ dist = zeros(1,n_sensors);
 buffer_size = 10; dist_buffer = []; buffer_enable = false;
 same_plane_count = 1; same_plane = 100;
 plane_count = 1;
+err_rec = [];
+
+% ========== sensor error parameter ==========
+p_mean = [0.0000, -0.0000, 0.0054, -0.4773, -5.8807];
+p_std = [0.0000, -0.0000, 0.0001, -0.0110, 1.7440];
+% ============================================
+
 while plane_count <= 10
     % update plane after every 100 iteration
     if same_plane_count >= same_plane
+        plane_count = plane_count + 1;
+        if plane_count > length(x_candidate)
+            break
+        end
+        same_plane_count = 1;
         delete(plane_vis);
-        plane.normal(3) = 0.7+0.28*rand(1);
-        plane.normal(1) = -0.15+0.3*rand(1);
-        plane.normal(2) = (-1)^randi([1,10],1)*sqrt(1-plane.normal(3)^2-plane.normal(1)^2);
+        plane.normal(3) = z_candidate(plane_count);
+        plane.normal(1) = x_candidate(plane_count);
+        plane.normal(2) = y_candidate(plane_count);
         d = -dot(plane.origin, plane.normal);
         [xx, yy] = meshgrid(ring.origin(1)-1.5*ring.R:10:ring.origin(1)+1.5*ring.R, ...
                             ring.origin(2)-1.5*ring.R:10:ring.origin(2)+1.5*ring.R);
         zz = (-d-plane.normal(1)*xx - plane.normal(2)*yy)*1./plane.normal(3);
         plane_vis = surf(xx,yy,zz,'FaceColor','none');
-        same_plane_count = 1;
-        plane_count = plane_count + 1;
     else
         same_plane_count = same_plane_count + 1;
     end
@@ -72,7 +94,12 @@ while plane_count <= 10
     % simulate sensor measurements
     for i = 1:n_sensors
         dist(i) = -(-d-plane.normal(1)*l{i}.XData(1) - plane.normal(2)*l{i}.YData(1))*1./plane.normal(3);
-        dist(i) = dist(i) + normrnd(0, 0.5);
+        % generate error
+        dist_merr = polyval(p_mean,dist(i));
+        dist_err_std = polyval(p_std,dist(i));
+        dist(i) = dist(i) + normrnd(dist_merr, dist_err_std);
+        % compensate error
+        dist(i) = dist(i) - 20;
     end
     
     % filtering
@@ -86,10 +113,12 @@ while plane_count <= 10
         dist_filtered = dist;
     end
     
-    % get surface normal
+    % get surface normal & calculate error
     norm = GetNormAtContact(dist_filtered, ring); 
-    tilt = max(min(dot([0,0,-1],norm)/(1*vecnorm(norm)),1),-1);
-    fprintf('estimated norm [%f,%f,%f]\t tilted angle: %f [deg]\n',norm,real(acosd(tilt)))
+    tilt_est = max(min(dot([0,0,-1]',norm)/(1*vecnorm(norm)),1),-1);
+    tilt_gdt = max(min(dot([0,0,1]',plane.normal)/(1*vecnorm(norm)),1),-1);
+    fprintf('estimated tilted angle: %f [deg]\t true tilted angle: %f [deg]\n',real(acosd(tilt_est)),real(acosd(tilt_gdt)))
+    err_rec = [err_rec, real(acosd(tilt_gdt)) - real(acosd(tilt_est))];
 
     % update visualization
     vec_amp = 60;  % amplify vector magnitude by 60 times
@@ -110,9 +139,11 @@ while plane_count <= 10
 end
 
 %% evaluation
-
-
-
+figure()
+plot(1:length(err_rec),abs(err_rec),'.');
+xlabel('sample'); ylabel('absolute error [deg]');
+title([num2str(n_sensors),' sensors'])
+grid on
 
 %% utilities
 function [norm] = GetNormAtContact(dist, ring)
