@@ -1,4 +1,4 @@
-%% simulate VL53L0X distance sensing
+%% simulate VL53L0X distance sensing on a sphere target
 clc; clear; close all
 
 % ========== random normal vector generation ==========
@@ -52,10 +52,14 @@ plane.normal = [x_candidate(1),y_candidate(1),z_candidate(1)]';
 plane.origin = [ring.origin(1),ring.origin(2),-ring.L]';
 % plane equation a*x + b*y + c*z + d = 0, where normal=[a,b,c]
 d = -dot(plane.origin, plane.normal);
-[xx, yy] = meshgrid(ring.origin(1)-1.5*ring.R:10:ring.origin(1)+1.5*ring.R, ...
-                    ring.origin(2)-1.5*ring.R:10:ring.origin(2)+1.5*ring.R);
-zz = (-d-plane.normal(1)*xx - plane.normal(2)*yy)*1./plane.normal(3);
-plane_vis = surf(xx,yy,zz,'FaceColor','none');
+% [xx, yy] = meshgrid(ring.origin(1)-1.5*ring.R:10:ring.origin(1)+1.5*ring.R, ...
+%                     ring.origin(2)-1.5*ring.R:10:ring.origin(2)+1.5*ring.R);
+% zz = (-d-plane.normal(1)*xx - plane.normal(2)*yy)*1./plane.normal(3);
+% zz = sqrt(100^2-(xx-ring.origin(1)).^2-(yy-ring.origin(2)).^2) - 250;
+% plane_vis = surf(xx,yy,zz,'FaceColor','none');
+sp = [ring.origin(1), ring.origin(2), -250, 100];
+[xx,yy,zz] = sphere;
+s1=surf(xx*sp(1,4)+sp(1,1),yy*sp(1,4)+sp(1,2),zz*sp(1,4)+sp(1,3),'FaceColor','none');
 ln_ = line([ring.origin(1),ring.origin(1)],[ring.origin(2),ring.origin(2)],[-250,-250],'Color','black','LineWidth',1.5); % ground truth
 
 %% do real-time visualization

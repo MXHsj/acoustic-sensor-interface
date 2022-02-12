@@ -1,7 +1,7 @@
 %% ====================================================
 % file name:    GenUnitVector.m
 % author:       Xihan Ma
-% description:  generate n unit vector
+% description:  generate n unit vectors
 % input:        number of vectors
 % output:       unit vector
 % =====================================================
