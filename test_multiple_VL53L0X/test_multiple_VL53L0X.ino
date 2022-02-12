@@ -8,10 +8,9 @@
 
 int sensor1,sensor2,sensor3,sensor4;
 
-
 // set the pins to shutdown
 #define SHT_LOX1 7
-#define SHT_LOX2 6 // 6
+#define SHT_LOX2 6
 #define SHT_LOX3 5
 #define SHT_LOX4 4
 
@@ -93,13 +92,14 @@ void setID() {
     while(1);
   }
 }
+
 void read_dual_sensors() {
   
   lox1.rangingTest(&measure1, false); // pass in 'true' to get debug data printout!
   lox2.rangingTest(&measure2, false); // pass in 'true' to get debug data printout!
   lox3.rangingTest(&measure3, false); // pass in 'true' to get debug data printout!
   lox4.rangingTest(&measure4, false); // pass in 'true' to get debug data printout!
-  // print sensor one reading
+  // print sensor 1 reading
   Serial.print("1: ");
   if(measure1.RangeStatus != 4) {     // if not out of range
     sensor1 = measure1.RangeMilliMeter;    
@@ -110,7 +110,7 @@ void read_dual_sensors() {
     Serial.print("Out of range\n");
   }
 
-  // print sensor two reading
+  // print sensor 2 reading
   Serial.print("2: ");
   if(measure2.RangeStatus != 4) {
     sensor2 = measure2.RangeMilliMeter;
@@ -121,7 +121,7 @@ void read_dual_sensors() {
     Serial.print("Out of range\n");
   }
 
-    // print sensor three reading
+  // print sensor 3 reading
   Serial.print("3: ");
   if(measure3.RangeStatus != 4) {
     sensor3 = measure3.RangeMilliMeter;
@@ -132,7 +132,7 @@ void read_dual_sensors() {
     Serial.print("Out of range\n");
   }
 
-    // print sensor four reading
+  // print sensor 4 reading
   Serial.print("4: ");
   if(measure4.RangeStatus != 4) {
     sensor4 = measure4.RangeMilliMeter;
@@ -143,11 +143,11 @@ void read_dual_sensors() {
     Serial.print("Out of range\n");
   }
   
-  Serial.println();
+//  Serial.println();
 }
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   // wait until serial port opens for native USB devices
   while (! Serial) { delay(1); }
@@ -169,11 +169,10 @@ void setup() {
   
   Serial.println("Starting...");
   setID();
- 
 }
 
 void loop() {
    
   read_dual_sensors();
-  delay(100);
+  delay(5);
 }
