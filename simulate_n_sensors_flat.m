@@ -1,6 +1,6 @@
 %% simulate VL53L0X distance sensing on a flat surface target
 clc; clear; close all
-
+load('data/sensor_mean.mat');
 % ========== random normal vector generation ==========
 vector = GenUnitVector(10, false)';
 x_candidate = vector(1,:);
@@ -99,7 +99,8 @@ while plane_count <= 10
         dist_err_std = polyval(p_std,dist(i));
         dist(i) = dist(i) + normrnd(dist_merr, dist_err_std);
         % compensate error
-        dist(i) = dist(i) - 20;
+        %dist(i) = dist(i) - 20;
+        dist(i)=sensor_compensate(dist(i),i,sensor_mean);
     end
     
     % filtering
@@ -131,6 +132,7 @@ while plane_count <= 10
     for i = 1:n_sensors
         l{i}.ZData = [0, 0];
         if ~isnan(dist_filtered(i))
+            
             l{i}.ZData = [0, -dist_filtered(i)];
         end
     end
@@ -141,6 +143,7 @@ end
 %% evaluation
 figure()
 plot(1:length(err_rec),abs(err_rec),'.');
+ylim([0,25])
 xlabel('sample'); ylabel('absolute error [deg]');
 title([num2str(n_sensors),' sensors'])
 grid on

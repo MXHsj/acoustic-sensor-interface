@@ -2,7 +2,7 @@
 clc; clear; close all
 load('data/sensor_test.mat');
 
-% ignore first 10 and last 1 measurements, consider 3 to 19 cm range
+% ignore first 10 and last 1 measurements, consider 4 to 20 cm range (index 3 to 19)
 sensor1_valid = sensor_1(10:end-1,3:end);
 sensor2_valid = sensor_2(10:end-1,3:end);
 sensor3_valid = sensor_3(10:end-1,3:end);
@@ -14,7 +14,7 @@ sensor_valid(:,:,3) = sensor3_valid;
 sensor_valid(:,:,4) = sensor4_valid;
 
 % calculate mean error
-ground_truth = 30:10:190;
+ground_truth = 40:10:200;
 sensor1_merr = ground_truth - mean(sensor1_valid);
 sensor2_merr = ground_truth - mean(sensor2_valid);
 sensor3_merr = ground_truth - mean(sensor3_valid);
@@ -24,6 +24,14 @@ sensor_merr(1,:) = sensor1_merr;
 sensor_merr(2,:) = sensor2_merr;
 sensor_merr(3,:) = sensor3_merr;
 sensor_merr(4,:) = sensor4_merr;
+
+%calculate mean measurement
+
+sensor_mean = zeros(4,length(sensor1_merr));
+sensor_mean(1,:) = mean(sensor1_valid);
+sensor_mean(2,:) = mean(sensor2_valid);
+sensor_mean(3,:) = mean(sensor3_valid);
+sensor_mean(4,:) = mean(sensor4_valid);
 
 % calculate standard deviation
 sensor_std = zeros(4,length(sensor1_merr));
@@ -86,4 +94,7 @@ for sensor = 1:sensor_num
     ylabel('error [mm]'); xlabel('distance [mm]')
     title(['sensor',num2str(sensor)])
 end
+%% testing
+correct=sensor_compensate(sensor_mean(1,:),1,sensor_mean)
+%visualize
 
