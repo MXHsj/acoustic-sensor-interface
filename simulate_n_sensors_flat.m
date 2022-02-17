@@ -148,6 +148,8 @@ ylim([0,25])
 xlabel('sample'); ylabel('absolute error [deg]');
 title([num2str(n_sensors),' sensors'])
 grid on
+% err_rec{n} = err_rec;     % n-->number of sensors
+% save('./data/sensor_sim{n=4}_{date}.mat','err_rec{n}');
 
 err_rec3=err_rec;
 save('./data/com_sensor_sim(n=3)_0214.mat','err_rec3');
