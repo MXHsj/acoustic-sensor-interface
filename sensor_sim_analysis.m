@@ -3,8 +3,8 @@ clc; clear; close all
 
 err_rec = [];
 for i = 3:8
-    load(['data/sensor_sim{n=',num2str(i),'}.mat'])
-    err_rec = [err_rec; evalin('base',['err_rec_',num2str(i)])];
+    load(['data/com_sensor_sim(n=',num2str(i),')_0214.mat'])
+    err_rec = [err_rec; evalin('base',['err_rec',num2str(i)])];
 end
 
 % scatter error

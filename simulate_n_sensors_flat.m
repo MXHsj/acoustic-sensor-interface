@@ -1,6 +1,6 @@
 %% simulate VL53L0X distance sensing on a flat surface target
 clc; clear; close all
-load('data/sensor_mean.mat');
+load('data/sensor_mean_sim.mat');
 % ========== random normal vector generation ==========
 vector = GenUnitVector(10, false)';
 x_candidate = vector(1,:);
@@ -12,7 +12,7 @@ z_candidate = vector(3,:);
 % =====================================================
 
 %% do simulation
-n_sensors = 4;  % 3 to 8
+n_sensors = 3;  % 3 to 8
 
 % set figure properties
 figure('Name','sensor ring vis','Position',[1920/5,1080/6,1080,810])
@@ -100,7 +100,7 @@ while plane_count <= 10
         dist(i) = dist(i) + normrnd(dist_merr, dist_err_std);
         % compensate error
         %dist(i) = dist(i) - 20;
-        dist(i)=sensor_compensate(dist(i),i,sensor_mean);
+        dist(i)=sensor_compensate(dist(i),1,sensor_mean_sim);
     end
     
     % filtering
@@ -144,10 +144,13 @@ end
 figure()
 plot(1:length(err_rec),abs(err_rec),'.');
 ylim([0,25])
+
 xlabel('sample'); ylabel('absolute error [deg]');
 title([num2str(n_sensors),' sensors'])
 grid on
 
+err_rec3=err_rec;
+save('./data/com_sensor_sim(n=3)_0214.mat','err_rec3');
 %% utilities
 function [norm] = GetNormAtContact(dist, ring)
 

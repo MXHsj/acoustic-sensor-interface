@@ -2,12 +2,12 @@
 clc; clear; close all
 
 % serial
-port = 'COM7'; 
+port = 'COM5'; 
 IDs = [1 2 3 4];
 if exist('sensors','var')
     clear sensors
 end
-sensors = serialport(port,115200,'DataBits',8,'Parity','none','StopBits',1);
+sensors = serialport(port,9600,'DataBits',8,'Parity','none','StopBits',1);
 
 % set figure properties
 figure('Name','sensor ring vis','Position',[1920/5,1080/6,1080,810])
