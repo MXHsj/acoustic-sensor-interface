@@ -75,8 +75,10 @@ end
 % sensor_num=1;
 % %===============change=============
 %%
-    test=[10 20 30 40; 20 30 40 50]
-for i = 1:length(test(:,1))
-    c(:,1)=CompSensorErr(test(i,:),sensor_mean);
-    com=[c,com];
-end
+xq=125;
+x=sensor_mean(1,:);
+v=40:10:200;
+vq = interp1(x,v,xq);
+figure
+plot(x,v,'o',xq,vq,'*');
+legend('v','vq');

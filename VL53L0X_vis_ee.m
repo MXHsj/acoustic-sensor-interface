@@ -2,7 +2,7 @@
 clc; clear; close all
 load('data/sensor_mean.mat');
 % serial
-port = 'COM5'; 
+port = 'COM9'; 
 IDs = [1 2 3 4];
 if exist('sensors','var')
     clear sensors
@@ -80,9 +80,9 @@ while 1
     end
     dist_filtered = FilterRawDist(dist_buffer);
 
-    correct = CompSensorErrRt(dist_filtered, true)
-    %c(:,1)=CompSensorErr(dist_filtered,sensor_mean);
+%     correct = CompSensorErrRt(dist_filtered, true);
 
+    correct(:,1) = CompSensorErr(dist_filtered,sensor_mean);
     dist_filtered=correct;
     
     % get surface normal
