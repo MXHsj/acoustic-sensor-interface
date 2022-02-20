@@ -1,6 +1,6 @@
 %% visualize end-effector through VL53L0X distance sensing
 clc; clear; close all
-
+load('data/sensor_mean.mat');
 % serial
 port = 'COM5'; 
 IDs = [1 2 3 4];
@@ -79,6 +79,11 @@ while 1
         dist_buffer(1,:) = [];
     end
     dist_filtered = FilterRawDist(dist_buffer);
+
+    correct = CompSensorErrRt(dist_filtered, true)
+    %c(:,1)=CompSensorErr(dist_filtered,sensor_mean);
+
+    dist_filtered=correct;
     
     % get surface normal
     norm = 120.*GetSurfNorm(dist_filtered); % amplify magnitude  
