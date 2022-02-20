@@ -51,7 +51,7 @@ while n_sample > 0 && count_sample < n_sample
     % record distance and amplitude
 %     dist_rec(count_sample, :) = dist_filtered;
     dist_rec(count_sample, :) = dist;
-    com(:,1)=sensor_compensate(dist_rec(:,sensor_num),sensor_num,sensor_mean);
+    com(:,1)=CompSensorErr(dist_rec(:,sensor_num),sensor_num,sensor_mean);
     count_sample = count_sample + 1;
 %     toc;
 end

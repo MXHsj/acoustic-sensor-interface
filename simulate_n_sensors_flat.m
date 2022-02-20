@@ -98,10 +98,11 @@ while plane_count <= 10
         dist_merr = polyval(p_mean,dist(i));
         dist_err_std = polyval(p_std,dist(i));
         dist(i) = dist(i) + normrnd(dist_merr, dist_err_std);
-        % compensate error
-        %dist(i) = dist(i) - 20;
-        dist(i)=sensor_compensate(dist(i),1,sensor_mean_sim);
+        % compensate error method1
+%         dist(i) = CompSensorErr(dist(i),1,sensor_mean_sim);
     end
+    % compensate error method2
+    dist = CompSensorErrRt(dist, true);
     
     % filtering
     if buffer_enable
@@ -118,7 +119,7 @@ while plane_count <= 10
     norm = GetNormAtContact(dist_filtered, ring); 
     tilt_est = max(min(dot([0,0,-1]',norm)/(1*vecnorm(norm)),1),-1);
     tilt_gdt = max(min(dot([0,0,1]',plane.normal)/(1*vecnorm(norm)),1),-1);
-    fprintf('estimated tilted angle: %f [deg]\t true tilted angle: %f [deg]\n',real(acosd(tilt_est)),real(acosd(tilt_gdt)))
+%     fprintf('estimated tilted angle: %f [deg]\t true tilted angle: %f [deg]\n',real(acosd(tilt_est)),real(acosd(tilt_gdt)))
     err_rec = [err_rec, real(acosd(tilt_gdt)) - real(acosd(tilt_est))];
 
     % update visualization
@@ -132,8 +133,9 @@ while plane_count <= 10
     for i = 1:n_sensors
         l{i}.ZData = [0, 0];
         if ~isnan(dist_filtered(i))
-            
             l{i}.ZData = [0, -dist_filtered(i)];
+        else
+            l{i}.ZData = [0, 0];
         end
     end
 %     fprintf('port0: %f[mm]\tport1: %f[mm]\tport2: %f[mm]\tport3: %f[mm]\n',dist(1),dist(2),dist(3),dist(4))
@@ -151,18 +153,19 @@ grid on
 % err_rec{n} = err_rec;     % n-->number of sensors
 % save('./data/sensor_sim{n=4}_{date}.mat','err_rec{n}');
 
-err_rec3=err_rec;
-save('./data/com_sensor_sim(n=3)_0214.mat','err_rec3');
+% err_rec3=err_rec;
+% save('./data/com_sensor_sim(n=3)_0214.mat','err_rec3');
+
 %% utilities
 function [norm] = GetNormAtContact(dist, ring)
 
-    Pt = [0,0,0];   % [mm] probe tip w.r.t eef frame
-    n_sensors = length(dist);
-    
     if sum(~isnan(dist)) < 3
-        norm = nan(1,3); disp('not enough valid sensor distance')
+        norm = nan(1,3); 
+        disp('not enough valid sensor measurements')
         return 
     end
+    Pt = [0,0,0];   % [mm] probe tip w.r.t eef frame
+    n_sensors = length(dist(~isnan(dist)));
     
     % calculate points under eef frame
     P = zeros(n_sensors,3);

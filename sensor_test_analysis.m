@@ -1,6 +1,7 @@
 %% process sensor_test data
-%clc; clear; close all
-%load('data/com_sensor_test.mat');
+clc; clear; close all
+load('data/com_sensor_test.mat');
+load('data/sensor_test.mat');
 
 % ignore first 10 and last 1 measurements, consider 4 to 20 cm range (index 3 to 19)
 sensor1_valid = sensor_1(10:end-1,3:end);
@@ -117,23 +118,26 @@ end
 figure()
 p_mean = polyfit(ground_truth, mean(sensor_merr),4);
 p_std = polyfit(ground_truth, mean(sensor_std),4);
-plot(ground_truth, polyval(p_mean,ground_truth),'LineWidth',1)
+% plot(ground_truth, polyval(p_mean,ground_truth),'LineWidth',1)
 
 
 %% error compensation
 figure('Position',[1920/2,1080/3,800,600])
 working_dist = [50, 50, 120, 120];
-error_range = [-45,45,45,-45];
+error_range = [-40,40,40,-40];
 for sensor = 1:sensor_num
     subplot(2,2,sensor)
+    p_err = polyfit(mean(sensor_valid(:,:,sensor)),sensor_merr(sensor,:),4);
     plot(mean(sensor_valid(:,:,sensor)),sensor_merr(sensor,:))
     grid on 
     hold on
+    plot(mean(sensor_valid(:,:,sensor)),polyval(p_err,mean(sensor_valid(:,:,sensor))));
     patch(working_dist,error_range,'red','FaceAlpha',.15,'EdgeColor','none')
     axis tight
     ylim(error_range(1:2))
-    ylabel('error [mm]'); xlabel('distance [mm]')
+    ylabel('error [mm]'); xlabel('sensor measurement [mm]')
     title(['sensor',num2str(sensor)])
+    legend('error','fitted error')
 end
-
-
+% get averaged error vs. measurement for 4 sensors
+p_err_mean = polyfit(mean(mean(sensor_valid),3),sensor_merr(sensor,:),4);
