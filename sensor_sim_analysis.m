@@ -3,7 +3,7 @@ clc; clear; close all
 
 err_rec = [];
 for i = 3:8
-    load(['data/com_sensor_sim(n=',num2str(i),')_0214.mat'])
+    load(['data/com_sensor_sim(n=',num2str(i),')_0222.mat'])
     err_rec = [err_rec; evalin('base',['err_rec',num2str(i)])];
 end
 

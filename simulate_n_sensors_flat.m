@@ -12,7 +12,7 @@ z_candidate = vector(3,:);
 % =====================================================
 
 %% do simulation
-n_sensors = 3;  % 3 to 8
+n_sensors = 8;  % 3 to 8
 
 % set figure properties
 figure('Name','sensor ring vis','Position',[1920/5,1080/6,1080,810])
@@ -99,10 +99,10 @@ while plane_count <= 10
         dist_err_std = polyval(p_std,dist(i));
         dist(i) = dist(i) + normrnd(dist_merr, dist_err_std);
         % compensate error method1
-%         dist(i) = CompSensorErr(dist(i),1,sensor_mean_sim);
+         dist(i) = CompSensorErr(dist(i),sensor_mean_sim);
     end
     % compensate error method2
-    dist = CompSensorErrRt(dist, true);
+%     dist = CompSensorErrRt(dist, true);
     
     % filtering
     if buffer_enable
@@ -153,8 +153,8 @@ grid on
 % err_rec{n} = err_rec;     % n-->number of sensors
 % save('./data/sensor_sim{n=4}_{date}.mat','err_rec{n}');
 
-% err_rec3=err_rec;
-% save('./data/com_sensor_sim(n=3)_0214.mat','err_rec3');
+err_rec8=err_rec;
+save('./data/com_sensor_sim(n=8)_0222.mat','err_rec8');
 
 %% utilities
 function [norm] = GetNormAtContact(dist, ring)
