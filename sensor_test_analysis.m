@@ -115,9 +115,9 @@ for sensor = 1:sensor_num
 
 end
 % average
-figure()
-p_mean = polyfit(ground_truth, mean(sensor_merr),4);
-p_std = polyfit(ground_truth, mean(sensor_std),4);
+% figure()
+% p_mean = polyfit(ground_truth, mean(sensor_merr),4);
+% p_std = polyfit(ground_truth, mean(sensor_std),4);
 % plot(ground_truth, polyval(p_mean,ground_truth),'LineWidth',1)
 
 
