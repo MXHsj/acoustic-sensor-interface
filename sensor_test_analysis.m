@@ -1,6 +1,6 @@
 %% process sensor_test data
 clc; clear; close all
-load('data/com_sensor_test.mat');
+load('data/newCom_0227.mat');
 load('data/sensor_test.mat');
 
 % ignore first 10 and last 1 measurements, consider 4 to 20 cm range (index 3 to 19)

@@ -1,7 +1,8 @@
 %% read VL53L0X laser range finder values from serial input
 clc; clear; close all
-% sensor_1=[];sensor_2=[];sensor_3=[];sensor_4=[];
-% com_sensor_1=[];com_sensor_2=[];com_sensor_3=[];com_sensor_4=[];
+sensor_1=[];sensor_2=[];sensor_3=[];sensor_4=[];
+com_sensor_4=[];
+
 load('data/sensor_mean.mat');
 
 %%
@@ -16,7 +17,7 @@ sensors = serialport(port,9600,'DataBits',8,'Parity','none','StopBits',1);
 port_flag = zeros(1,length(IDs),'logical');
 dist = zeros(1,length(IDs));
 buffer_size = 5; dist_buffer = [];
-n_sample = 100;      % set data_count to -1 to disable recording
+n_sample = 301;      % set data_count to -1 to disable recording
 dist_rec = zeros(n_sample,length(IDs));
 count_sample = 1;
 
@@ -34,6 +35,7 @@ while n_sample > 0 && count_sample < n_sample
     else
         dist(port_flag) = nan;
     end
+    
 %     % filtering
 %     dist_buffer = [dist_buffer; dist];
 %     if length(dist_buffer) > buffer_size
@@ -44,18 +46,20 @@ while n_sample > 0 && count_sample < n_sample
     
 %     fprintf('sensor1: %f[mm]\tsensor2: %f[mm]\tsensor3: %f[mm]\tsensor4: %f[mm]\n', ...
 %             dist_filtered(1),dist_filtered(2),dist_filtered(3),dist_filtered(4))
-    fprintf('sensor %d range: %f [mm]\n', IDs(1), dist(1))
-    fprintf('sensor %d range: %f [mm]\n', IDs(2), dist(2))
-    fprintf('sensor %d range: %f [mm]\n', IDs(3), dist(3))
-    fprintf('sensor %d range: %f [mm]\n', IDs(4), dist(4))
+%     fprintf('sensor %d range: %f [mm]\n', IDs(1), dist(1))
+%     fprintf('sensor %d range: %f [mm]\n', IDs(2), dist(2))
+%     fprintf('sensor %d range: %f [mm]\n', IDs(3), dist(3))
+%     fprintf('sensor %d range: %f [mm]\n', IDs(4), dist(4))
     % record distance and amplitude
 %     dist_rec(count_sample, :) = dist_filtered;
     dist_rec(count_sample, :) = dist;
-    
-
+    correct = CompSensorErr(dist(4),sensor_mean);
+    com=[com;correct];
     count_sample = count_sample + 1;
 %     toc;
 end
+   com_sensor_4=[com_sensor_4,com];
+   sensor_4=[sensor_4,dist_rec(:,4)];
     %================================
 %     test=[10 20 30 40; 20 30 40 50]
 % for i = 1:length(IDs)
@@ -63,6 +67,7 @@ end
 %     com=[c,com];
 % end
     %================================
+   
 
 %% plot recorded data
 % figure('Position',[1920/6,1080/6,1920,720])
@@ -75,10 +80,3 @@ end
 % sensor_num=1;
 % %===============change=============
 %%
-xq=125;
-x=sensor_mean(1,:);
-v=40:10:200;
-vq = interp1(x,v,xq);
-figure
-plot(x,v,'o',xq,vq,'*');
-legend('v','vq');
