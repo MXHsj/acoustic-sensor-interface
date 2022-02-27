@@ -22,6 +22,8 @@ sensors = serialport(port,9600,'DataBits',8,'Parity','none','StopBits',1);
 
 port_flag = zeros(1,length(IDs),'logical');
 dist = zeros(1,length(IDs));
+load('data/sensor_mean.mat');
+
 
 en_buffer = false;
 buffer_size = 4; dist_buffer = [];
@@ -54,10 +56,8 @@ while 1
     end
     
     % ========== compensate for inividual sensors ==========
-    dist_filtered(1) = dist_filtered(1) - 20;
-    dist_filtered(2) = dist_filtered(2) - 15;
-    dist_filtered(3) = dist_filtered(3) - 5;
-    dist_filtered(4) = dist_filtered(4) + 5;
+    correct(:,1) = CompSensorErr(dist_filtered,sensor_mean);
+    dist_filtered=correct;
     % ======================================================
     
     % get surface normal
