@@ -52,16 +52,30 @@ plane.normal = [x_candidate(1),y_candidate(1),z_candidate(1)]';
 plane.origin = [ring.origin(1),ring.origin(2),-ring.L]';
 % plane equation a*x + b*y + c*z + d = 0, where normal=[a,b,c]
 d = -dot(plane.origin, plane.normal);
-% [xx, yy] = meshgrid(ring.origin(1)-1.5*ring.R:10:ring.origin(1)+1.5*ring.R, ...
-%                     ring.origin(2)-1.5*ring.R:10:ring.origin(2)+1.5*ring.R);
-% zz = (-d-plane.normal(1)*xx - plane.normal(2)*yy)*1./plane.normal(3);
-% zz = sqrt(100^2-(xx-ring.origin(1)).^2-(yy-ring.origin(2)).^2) - 250;
-% plane_vis = surf(xx,yy,zz,'FaceColor','none');
-sp = [ring.origin(1), ring.origin(2), -250, 100];
-[xx,yy,zz] = sphere;
-s1=surf(xx*sp(1,4)+sp(1,1),yy*sp(1,4)+sp(1,2),zz*sp(1,4)+sp(1,3),'FaceColor','none');
-ln_ = line([ring.origin(1),ring.origin(1)],[ring.origin(2),ring.origin(2)],[-250,-250],'Color','black','LineWidth',1.5); % ground truth
+% % [xx, yy] = meshgrid(ring.origin(1)-1.5*ring.R:10:ring.origin(1)+1.5*ring.R, ...
+% %                     ring.origin(2)-1.5*ring.R:10:ring.origin(2)+1.5*ring.R);
+% % zz = (-d-plane.normal(1)*xx - plane.normal(2)*yy)*1./plane.normal(3);
+% % zz = sqrt(100^2-(xx-ring.origin(1)).^2-(yy-ring.origin(2)).^2) - 250;
+% % plane_vis = surf(xx,yy,zz,'FaceColor','none');
+% sp = [ring.origin(1), ring.origin(2), -250, 100];
+% [xx,yy,zz] = sphere;
+% s1=surf(xx*sp(1,4)+sp(1,1),yy*sp(1,4)+sp(1,2),zz*sp(1,4)+sp(1,3),'FaceColor','none');
+% ln_ = line([ring.origin(1),ring.origin(1)],[ring.origin(2),ring.origin(2)],[-250,-250],'Color','black','LineWidth',1.5); % ground truth
+hold on;
+[xx, yy] = meshgrid(-80:1:80);  
+k=200;
+zz=-100+(1/8.*(k*exp(-((2/3.*0.05*abs(xx)-1).^2 ...
+    +(2/3.*0.05*yy).^2)-1/5*(2/3.*0.05*yy+1/2).^3) ...
+    +2/3.*exp(-2.818^11*((2/3.*0.05*abs(xx)-1).^2 ...
+    +(2/3.*0.05*yy).^2).^2)+2/3.*0.05*yy-(2/3.*0.05*xx).^4));
+I=find(sqrt((abs(xx)-3/2).^2+yy.^2)<0.45);
+R=1.0*ones(size(xx)); R(I)=0.9;
+G=0.9*ones(size(xx)); G(I)=0.6;
+B=0.9*ones(size(xx)); B(I)=0.6;
+surf(xx,yy,zz,cat(3,R,G,B));
 
+axis image; 
+% shading interp;camlight left
 %% do real-time visualization
 dist = zeros(1,n_sensors);
 buffer_size = 10; dist_buffer = []; buffer_enable = false;
