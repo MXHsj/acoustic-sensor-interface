@@ -4,12 +4,14 @@ clc; clear; close all
 %% ----------------- ROS network -----------------
 rosshutdown
 % [~, local_ip] = system('ipconfig');
-setenv('ROS_MASTER_URI','http://130.215.14.145:11311') % ip of robot desktop
+setenv('ROS_MASTER_URI','http://130.215.170.6:11311') % ip of robot desktop
 setenv('ROS_IP','130.215.192.168')   % ip of this machine
 rosinit
 % define publisher
 VL53L0X_dist_pub = rospublisher('VL53L0X/distance', 'std_msgs/Float64MultiArray');
 VL53L0X_norm_pub = rospublisher('VL53L0X/normal', 'std_msgs/Float64MultiArray');
+franka_pos_sub = rossubscriber('franka_state_custom', 'std_msgs/Float64MultiArray');
+franka_pose = zeros(4,4);
 VL53L0X_dist_msg = rosmessage(VL53L0X_dist_pub);
 VL53L0X_norm_msg = rosmessage(VL53L0X_norm_pub);
 VL53L0X_dist_msg.Data = [nan, nan, nan, nan];
@@ -34,6 +36,8 @@ rate = rateControl(freq);
 
 while 1
 %     tic
+    franka_pose_msg = receive(franka_pos_sub);
+    franka_pose = reshape([franka_pose_msg.Data],4,4)';
     latest = char(readline(sensors));
     % check sensor ID
     for i = 1:length(IDs)
@@ -59,23 +63,29 @@ while 1
     end
     
     % ========== compensate for inividual sensors ==========
-%     dist_filtered(1) = dist_filtered(1) - 20;
-%     dist_filtered(2) += dist_filtered(2) - 15;
-%     dist_filtered(3) = dist_filtered(3) - 5;
-%     dist_filtered(4) = dist_filtered(4) + 5;
     correct(:,1) = CompSensorErr(dist_filtered,sensor_mean);
     dist_filtered=correct;
     % ======================================================
     
     % get surface normal
     norm = GetSurfNorm(dist_filtered); % amplify magnitude  
-%     tilt = max(min(dot([0,0,-1],norm)/(1*vecnorm(norm)),1),-1);
     % vis
-    fprintf('sensor1: %f[mm]\tsensor2: %f[mm]\tsensor3: %f[mm]\tsensor4: %f[mm]\n', ...
-            dist_filtered(1),dist_filtered(2),dist_filtered(3),dist_filtered(4))
+%     fprintf('sensor1: %f[mm]\tsensor2: %f[mm]\tsensor3: %f[mm]\tsensor4: %f[mm]\n', ...
+%             dist_filtered(1),dist_filtered(2),dist_filtered(3),dist_filtered(4))
     % publish message
     VL53L0X_dist_msg.Data = dist_filtered;
-    VL53L0X_norm_msg.Data = norm;
+    % ===== calculate rotation error =====
+    approach_vec = franka_pose(1:3,3);
+    axis = cross(norm, approach_vec);
+    angle = acos(dot(norm, approach_vec));
+    R_desired = franka_pose(1:3,1:3)*axang2rotm([axis, angle]);
+    rpy_desired = rotm2eul(R_desired);
+    rpy_current = rotm2eul(franka_pose(1:3,1:3));
+    rot_err = fliplr(rpy_desired - rpy_current);
+    rot_err(rot_err < -pi) = rot_err(rot_err < -pi) + 2*pi;
+    rot_err(rot_err > pi) = rot_err(rot_err > pi) - 2*pi
+    % ====================================
+    VL53L0X_norm_msg.Data = rot_err;
     send(VL53L0X_dist_pub, VL53L0X_dist_msg);
     send(VL53L0X_norm_pub, VL53L0X_norm_msg);
     waitfor(rate);

@@ -1,23 +1,23 @@
 %% process sensor_test data
 clc; clear; close all
-load('data/newCom_0227.mat');
+load('data/newCom_2_0227.mat');
 load('data/sensor_test.mat');
 
 % ignore first 10 and last 1 measurements, consider 4 to 20 cm range (index 3 to 19)
-sensor1_valid = sensor_1(10:end-1,3:end);
-sensor2_valid = sensor_2(10:end-1,3:end);
-sensor3_valid = sensor_3(10:end-1,3:end);
-sensor4_valid = sensor_4(10:end-1,3:end);
+sensor1_valid = sensor_1(10:end-1,4:end);
+sensor2_valid = sensor_2(10:end-1,4:end);
+sensor3_valid = sensor_3(10:end-1,4:end);
+sensor4_valid = sensor_4(10:end-1,4:end);
 sensor_valid = zeros([size(sensor1_valid),sensor_num]);
 sensor_valid(:,:,1) = sensor1_valid;
 sensor_valid(:,:,2) = sensor2_valid;
 sensor_valid(:,:,3) = sensor3_valid;
 sensor_valid(:,:,4) = sensor4_valid;
 %after compensator
-com_sensor1_valid = com_sensor_1(10:end-10,3:end);
-com_sensor2_valid = com_sensor_2(10:end-10,3:end);
-com_sensor3_valid = com_sensor_3(10:end-10,3:end);
-com_sensor4_valid = com_sensor_4(10:end-10,3:end);
+com_sensor1_valid = com_sensor_1(10:end-10,4:end);
+com_sensor2_valid = com_sensor_2(10:end-10,4:end);
+com_sensor3_valid = com_sensor_3(10:end-10,4:end);
+com_sensor4_valid = com_sensor_4(10:end-10,4:end);
 com_sensor_valid = zeros([size(com_sensor1_valid),sensor_num]);
 com_sensor_valid(:,:,1) = com_sensor1_valid;
 com_sensor_valid(:,:,2) = com_sensor2_valid;
@@ -25,7 +25,7 @@ com_sensor_valid(:,:,3) = com_sensor3_valid;
 com_sensor_valid(:,:,4) = com_sensor4_valid;
 
 % calculate mean error
-ground_truth = 40:10:200;
+ground_truth = 50:10:200;
 sensor1_merr = ground_truth - mean(sensor1_valid);
 sensor2_merr = ground_truth - mean(sensor2_valid);
 sensor3_merr = ground_truth - mean(sensor3_valid);
