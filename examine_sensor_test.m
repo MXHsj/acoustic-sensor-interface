@@ -95,24 +95,23 @@ for sensor = 1:sensor_num
 end
 
 %% visualize sensor accuracy
-sensor_num=4
-figure('Position',[1920/2,1080/3,800,600])
+sensor_num = 4;
+figure('Position',[1920/2,1080/3,600,400])
 working_dist = [50, 50, 120, 120];
-error_range = [-45,45,45,-45];
+error_range = [-25, 50, 50, -25];
 for sensor = 1:sensor_num
-    subplot(2,2,sensor)
-    errorbar(ground_truth,sensor_merr(sensor,:),sensor_std(sensor,:))
-    grid on 
-    hold on
-    errorbar(ground_truth,com_sensor_merr(sensor,:),com_sensor_std(sensor,:))
-    grid on
-    hold on
-    patch(working_dist,error_range,'red','FaceAlpha',.15,'EdgeColor','none')
+    ax = subplot(2,2,sensor);
+    errorbar(ground_truth,sensor_merr(sensor,:),sensor_std(sensor,:),'LineWidth',1.2,'Color',[0 0 0])
+    hold on;
+    errorbar(ground_truth,com_sensor_merr(sensor,:),com_sensor_std(sensor,:),'LineWidth',1.2,'Color',[1 0 1])
+%     patch(working_dist,error_range,'red','FaceAlpha',.1,'EdgeColor','none')
     xlim([ground_truth(1),ground_truth(end)]); ylim(error_range(1:2));
-    xticks(linspace(ground_truth(1),ground_truth(end),5))
-    ylabel('error [mm]'); xlabel('distance [mm]')
+    xticks(ground_truth(1):10:ground_truth(end));
+    xticklabels({''}); yticklabels({''});
+%     ylabel('error (mm)'); xlabel('distance (mm)')
     title(['sensor',num2str(sensor)])
-
+    legend('w/o compensator','w/ compensator','Location','northwest')
+    ax.YGrid = 'on'; ax.LineWidth = 1.2;
 end
 % average
 % figure()
