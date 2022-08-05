@@ -1,8 +1,8 @@
 %% process sensor_test data
 clc; clear; close all
-load('data/newCom_2_0227.mat');
-load('data/sensor_test.mat');
-
+load('data/withcom.mat');
+load('data/newSensor_0804.mat');
+sensor_num=4;
 % ignore first 10 and last 1 measurements, consider 4 to 20 cm range (index 3 to 19)
 sensor1_valid = sensor_1(10:end-1,4:end);
 sensor2_valid = sensor_2(10:end-1,4:end);

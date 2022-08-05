@@ -1,0 +1,10 @@
+clear;clc;
+load('data/newSensor_0804.mat')
+sensor_mean=[];
+sen1=mean(sensor_1);
+sen2=mean(sensor_2);
+sen3=mean(sensor_3);
+sen4=mean(sensor_4);
+sensor_mean=[sen1;sen2];
+sensor_mean=[sensor_mean;sen3];
+sensor_mean=[sensor_mean;sen4];
