@@ -96,14 +96,16 @@ h = figure();
 aviObj = VideoWriter('surf_st_nocomp','MPEG-4');
 aviObj.FrameRate = surf_st_nocomp_samples/61; aviObj.Quality = 100;
 open(aviObj);
-plot(1:surf_st_nocomp_samples, surf_st_nocomp.err_angle,'Color','#5671ba','LineWidth',1); hold on
-grid on
+plot((1:surf_st_nocomp_samples)/aviObj.FrameRate, surf_st_nocomp.err_angle,'Color','#5671ba','LineWidth',1); 
+hold on; grid on; axis tight
 ylim([0 50])
-xlabel('sample'); ylabel('error [deg]')
-title('w/o compensator static tracking')
+xlabel('time (seconds)'); ylabel('normal-positioning error (deg)')
+set(gcf,'color','w');
+set(gca,'color','w','XColor',[0.15 0.15 0.15],'YColor',[0.15 0.15 0.15],'ZColor',[0.15 0.15 0.15]);
+% title('w/o compensator static tracking')
 for i = 1:surf_st_nocomp_samples
-    curr_pnt = plot(i,surf_st_nocomp.err_angle(i),'.r','MarkerSize',25);
-    annotate = text(i-10,surf_st_nocomp.err_angle(i)+1.5,num2str(surf_st_nocomp.err_angle(i)));
+    curr_pnt = plot(i/aviObj.FrameRate,surf_st_nocomp.err_angle(i),'.r','MarkerSize',25);
+    annotate = text((i-10)/aviObj.FrameRate,surf_st_nocomp.err_angle(i)+1.5,num2str(surf_st_nocomp.err_angle(i)));
     annotate.FontSize = 12;
     pause(0.0001)
     writeVideo(aviObj, getframe(h));
@@ -118,13 +120,16 @@ h = figure();
 aviObj = VideoWriter('surf_st_comp','MPEG-4');
 aviObj.FrameRate = surf_st_comp_samples/61; aviObj.Quality = 100;
 open(aviObj);
-plot(1:surf_st_comp_samples, surf_st_comp.err_angle,'Color','#5671ba','LineWidth',1); hold on; grid on
+plot((1:surf_st_comp_samples)/aviObj.FrameRate, surf_st_comp.err_angle,'Color','#5671ba','LineWidth',1); 
+hold on; grid on; axis tight
 ylim([0 50])
-xlabel('sample'); ylabel('error [deg]')
-title('w/ compensator static tracking')
+xlabel('time (seconds)'); ylabel('normal-positioning error (deg)')
+set(gcf,'color','w');
+set(gca,'color','w','XColor',[0.15 0.15 0.15],'YColor',[0.15 0.15 0.15],'ZColor',[0.15 0.15 0.15]);
+% title('w/ compensator static tracking')
 for i = 1:surf_st_comp_samples
-    curr_pnt = plot(i,surf_st_comp.err_angle(i),'.r','MarkerSize',25);
-    annotate = text(i-10,surf_st_comp.err_angle(i)+1.5,num2str(surf_st_comp.err_angle(i)));
+    curr_pnt = plot(i/aviObj.FrameRate,surf_st_comp.err_angle(i),'.r','MarkerSize',25);
+    annotate = text((i-10)/aviObj.FrameRate,surf_st_comp.err_angle(i)+1.5,num2str(surf_st_comp.err_angle(i)));
     annotate.FontSize = 12;
     pause(0.0001)
     writeVideo(aviObj, getframe(h));
@@ -139,13 +144,16 @@ h = figure();
 aviObj = VideoWriter('surf_dy_nocomp','MPEG-4');
 aviObj.FrameRate = surf_dy_nocomp_samples/42; aviObj.Quality = 100;
 open(aviObj);
-plot(1:surf_dy_nocomp_samples, surf_dy_nocomp.err_angle,'Color','#5671ba','LineWidth',1); hold on; grid on
+plot((1:surf_dy_nocomp_samples)/aviObj.FrameRate, surf_dy_nocomp.err_angle,'Color','#5671ba','LineWidth',1); 
+hold on; grid on; axis tight
 ylim([0 50])
-xlabel('sample'); ylabel('error [deg]')
-title('w/o compensator dynamic tracking')
+xlabel('time (seconds)'); ylabel('normal-positioning error (deg)')
+set(gcf,'color','w');
+set(gca,'color','w','XColor',[0.15 0.15 0.15],'YColor',[0.15 0.15 0.15],'ZColor',[0.15 0.15 0.15]);
+% title('w/o compensator dynamic tracking')
 for i = 1:surf_dy_nocomp_samples
-    curr_pnt = plot(i,surf_dy_nocomp.err_angle(i),'.r','MarkerSize',25);
-    annotate = text(i-10,surf_dy_nocomp.err_angle(i)+1.5,num2str(surf_dy_nocomp.err_angle(i)));
+    curr_pnt = plot(i/aviObj.FrameRate,surf_dy_nocomp.err_angle(i),'.r','MarkerSize',25);
+    annotate = text((i-10)/aviObj.FrameRate,surf_dy_nocomp.err_angle(i)+1.5,num2str(surf_dy_nocomp.err_angle(i)));
     annotate.FontSize = 12;
     pause(0.0001)
     writeVideo(aviObj, getframe(h));
@@ -160,13 +168,16 @@ h = figure();
 aviObj = VideoWriter('surf_dy_comp','MPEG-4');
 aviObj.FrameRate = surf_dy_comp_samples/46; aviObj.Quality = 100;
 open(aviObj);
-plot(1:surf_dy_comp_samples, surf_dy_comp.err_angle,'Color','#5671ba','LineWidth',1); hold on; grid on
+plot((1:surf_dy_comp_samples)/aviObj.FrameRate, surf_dy_comp.err_angle,'Color','#5671ba','LineWidth',1); 
+hold on; grid on; axis tight
 ylim([0 50])
-xlabel('sample'); ylabel('error [deg]')
-title('w compensator dynamic tracking')
+xlabel('time (seconds)'); ylabel('normal-positioning error (deg)')
+set(gcf,'color','w');
+set(gca,'color','w','XColor',[0.15 0.15 0.15],'YColor',[0.15 0.15 0.15],'ZColor',[0.15 0.15 0.15]);
+% title('w compensator dynamic tracking')
 for i = 1:surf_dy_comp_samples
-    curr_pnt = plot(i,surf_dy_comp.err_angle(i),'.r','MarkerSize',25);
-    annotate = text(i-10,surf_dy_comp.err_angle(i)+1.5,num2str(surf_dy_comp.err_angle(i)));
+    curr_pnt = plot(i/aviObj.FrameRate,surf_dy_comp.err_angle(i),'.r','MarkerSize',25);
+    annotate = text((i-10)/aviObj.FrameRate,surf_dy_comp.err_angle(i)+1.5,num2str(surf_dy_comp.err_angle(i)));
     annotate.FontSize = 12;
     pause(0.0001)
     writeVideo(aviObj, getframe(h));
